@@ -1,6 +1,6 @@
 # TODO: FILL THIS FILE
 
-# java-jump-to-method
+# jump-to-method
 
 ## Features
 

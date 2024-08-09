@@ -89,9 +89,9 @@ async function jumpToPrevious() {
 }
 
 function activate(context) {
-	const disposablePrevious = vscode.commands.registerCommand('java-jump-to-method.jumpToPrevious', jumpToPrevious);
+	const disposablePrevious = vscode.commands.registerCommand('jump-to-method.jumpToPrevious', jumpToPrevious);
 	context.subscriptions.push(disposablePrevious);
-	const disposableNext = vscode.commands.registerCommand('java-jump-to-method.jumpToNext', jumpToNext);
+	const disposableNext = vscode.commands.registerCommand('jump-to-method.jumpToNext', jumpToNext);
 	context.subscriptions.push(disposableNext);
 	vscode.workspace.onDidChangeTextDocument(
 		event => {
