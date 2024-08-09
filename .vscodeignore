@@ -1,10 +1,15 @@
+# folders
 .vscode/**
-.vscode-test/**
 test/**
+node_modules/**
+#files
+**/.eslintrc.json
 .gitignore
-.yarnrc
+**/.vscode-test.*
+extension.js
+install.sh
+package.json.bak
+package-lock.json
 vsc-extension-quickstart.md
 **/jsconfig.json
 **/*.map
-**/.eslintrc.json
-**/.vscode-test.*
