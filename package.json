@@ -27,7 +27,7 @@
     "lint": "eslint .",
     "pretest": "npm run lint",
     "test": "vscode-test",
-    "install": ".\\install.sh",
+    "install-extension": ".\\install.sh",
     "compile": "webpack --mode development",
     "watch": "webpack --mode development --watch",
     "vscode:prepublish": "npm run package",
