@@ -1,6 +1,6 @@
 # TODO: FILL THIS FILE
 
-# jump-to-method
+# jump-to-function
 
 ## Features
 

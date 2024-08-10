@@ -1,6 +1,6 @@
 {
-  "name": "jump-to-method",
-  "displayName": "Java jump to method",
+  "name": "jump-to-function",
+  "displayName": "Java jump to function",
   "description": "",
   "version": "0.0.1",
   "engines": {
@@ -14,12 +14,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "jump-to-method.jumpToPrevious",
-        "title": "Jump to previous method"
+        "command": "jump-to-function.jumpToPrevious",
+        "title": "Jump to previous function"
       },
       {
-        "command": "jump-to-method.jumpToNext",
-        "title": "Jump to next method"
+        "command": "jump-to-function.jumpToNext",
+        "title": "Jump to next function"
       }
     ]
   },
