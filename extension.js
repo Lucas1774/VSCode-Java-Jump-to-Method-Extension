@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 
 let functions = [];
+let isCacheValid = false;
 
 const flattenSymbols = (symbols) => {
 	let result = [];
@@ -25,6 +26,7 @@ const updateFunctionsCache = async (document) => {
 			|| symbol.kind === vscode.SymbolKind.Function
 			|| symbol.kind === vscode.SymbolKind.Constructor)
 		.sort((a, b) => a.selectionRange.start.compareTo(b.selectionRange.start));
+	isCacheValid = true;
 };
 
 const findNextFunctionIndex = (position) => {
@@ -35,7 +37,10 @@ const findNextFunctionIndex = (position) => {
 		const mid = Math.floor((start + end) / 2);
 		// Using selectionRange sounds hacky but jumps through comments and docs
 		const functionPosition = functions[mid].selectionRange.start;
-		if (functionPosition.isAfter(position)) {
+		if (functionPosition.isEqual(position)) {
+			return mid + 1;
+		}
+		else if (functionPosition.isAfter(position)) {
 			end = mid - 1;
 		} else {
 			start = mid + 1;
@@ -57,7 +62,7 @@ const getFunction = (direction) => {
 			vscode.window.showInformationMessage('No cursor position found');
 			return;
 		}
-		if (functions.length === 0) {
+		if (!isCacheValid || functions.length === 0) {
 			await updateFunctionsCache(document);
 		}
 		const functionIndex = findNextFunctionIndex(position);
@@ -95,20 +100,8 @@ function activate(context) {
 	context.subscriptions.push(disposablePrevious);
 	const disposableNext = vscode.commands.registerCommand('jump-to-function.jumpToNext', jumpToNext);
 	context.subscriptions.push(disposableNext);
-	vscode.workspace.onDidChangeTextDocument(
-		event => {
-			if (event.document) {
-				updateFunctionsCache(event.document);
-			}
-		}
-	);
-	vscode.window.onDidChangeActiveTextEditor(
-		editor => {
-			if (editor) {
-				updateFunctionsCache(editor.document);
-			}
-		}
-	);
+	vscode.workspace.onDidChangeTextDocument(() => { isCacheValid = false });
+	vscode.window.onDidChangeActiveTextEditor(() => { isCacheValid = false });
 }
 
 function deactivate() {
