@@ -49,50 +49,48 @@ const findNextFunctionIndex = (position) => {
 	return start;
 };
 
-const getFunction = (direction) => {
-	return async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showInformationMessage('No editor is active');
-			return;
+const getFunction = async (direction) => {
+	const editor = vscode.window.activeTextEditor;
+	if (!editor) {
+		vscode.window.showInformationMessage('No editor is active');
+		return;
+	}
+	const document = editor.document;
+	const position = editor.selection.active;
+	if (!position) {
+		vscode.window.showInformationMessage('No cursor position found');
+		return;
+	}
+	if (!isCacheValid || functions.length === 0) {
+		await updateFunctionsCache(document);
+	}
+	const functionIndex = findNextFunctionIndex(position);
+	let targetFunction = null;
+	if (direction === 'next') {
+		if (functionIndex < functions.length) {
+			targetFunction = functions[functionIndex];
 		}
-		const document = editor.document;
-		const position = editor.selection.active;
-		if (!position) {
-			vscode.window.showInformationMessage('No cursor position found');
-			return;
+	} else if (direction === 'previous') {
+		if (functionIndex > 0) {
+			targetFunction = functions[functionIndex - 1].selectionRange.start.isEqual(position)
+				? functions[functionIndex - 2]
+				: functions[functionIndex - 1];
 		}
-		if (!isCacheValid || functions.length === 0) {
-			await updateFunctionsCache(document);
-		}
-		const functionIndex = findNextFunctionIndex(position);
-		let targetFunction = null;
-		if (direction === 'next') {
-			if (functionIndex < functions.length) {
-				targetFunction = functions[functionIndex];
-			}
-		} else if (direction === 'previous') {
-			if (functionIndex > 0) {
-				targetFunction = functions[functionIndex - 1].selectionRange.start.isEqual(position)
-					? functions[functionIndex - 2]
-					: functions[functionIndex - 1];
-			}
-		}
-		if (targetFunction) {
-			editor.selection = new vscode.Selection(targetFunction.selectionRange.start, targetFunction.selectionRange.start);
-			editor.revealRange(targetFunction.selectionRange);
-		} else {
-			vscode.window.showInformationMessage('No function found');
-		}
-	};
+	}
+	if (targetFunction) {
+		editor.selection = new vscode.Selection(targetFunction.selectionRange.start, targetFunction.selectionRange.start);
+		editor.revealRange(targetFunction.selectionRange);
+	} else {
+		vscode.window.showInformationMessage('No function found');
+	}
 };
 
-async function jumpToNext() {
-	await getFunction('next')();
+function jumpToNext() {
+	getFunction('next');
 }
 
-async function jumpToPrevious() {
-	await getFunction('previous')();
+function jumpToPrevious() {
+	getFunction('previous');
 }
 
 function activate(context) {
@@ -105,7 +103,7 @@ function activate(context) {
 }
 
 function deactivate() {
-	// :::
+	// ...
 }
 
 module.exports = {

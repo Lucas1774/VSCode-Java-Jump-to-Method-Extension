@@ -1,6 +1,6 @@
 {
   "name": "jump-to-function",
-  "displayName": "Java jump to function",
+  "displayName": "Jump to function",
   "description": "",
   "version": "0.0.1",
   "engines": {
